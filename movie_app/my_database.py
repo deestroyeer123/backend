@@ -17,21 +17,27 @@ db = firebase.database()
 class DatabaseHelper():
 
     tabele_name = "Profiles"
+    uID = ""
 
-    def insert():
-        profile = Profile(name="stefan", age=55, sex="facecik", movie1="filmik", movie2="elo", movie3="siema", elem1="elemencik", 
-        elem2="drugi", elem3="trzeci", place="plaza", country1="francja", country2="polska", country3="niemcy", actor1="pierwszy", 
-        actor2="aktorek", actor3="aktorzyna", director1="rezyserek", director2="albert", director3="piotrus", is_ocar_winning=True, 
-        years1="wczesne", years2="srednie", years3="pozne", food1="chrupki", food2="jedzonko", food3="piwko", group="mala")
-        serializer = ProfileSerializer(profile)
-        db.child("Profiles").push(serializer.data)
+    def insert(values, userID):
+        db.child("Profiles").child(userID).set(values)
 
-    def insert2(values):
-        db.child("Profiles").push(values)
+    def update(values, userID):
+        db.child("Profiles").child(userID).update(values)
 
-    def update():
-        user = db.child("Profiles").get()
-        print(user)
-        #DatabaseHelper.insert()
-        #db.child("Profiles").child("Morty").update({"name": "Mortiest Morty"})
+    def getVal(userID):
+        values = db.child("Profiles").get()
+        if values.val() == None:
+            return False
+        else:
+            for x in values.val():
+                if x == userID:
+                    return True
+            return False
+
+    def getProfile(userID):
+        profile = db.child("Profiles").child(userID).get()
+        return profile.val()
+        #return profile
+
         
