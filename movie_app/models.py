@@ -33,6 +33,12 @@ class Foods(models.Model):
     food1 = models.CharField(max_length=100)
     food2 = models.CharField(max_length=100)
     food3 = models.CharField(max_length=100) """
+class UserStorage(models.Model):
+    img = models.ImageField(upload_to = '', default = 'none/no-img.jpg')
+
+class User(models.Model):
+    login = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
 
 class ProfileDetails(models.Model):
     uid = models.CharField(max_length=600)

@@ -38,6 +38,28 @@ class DatabaseHelper():
     def getProfile(userID):
         profile = db.child("Profiles").child(userID).get()
         return profile.val()
-        #return profile
 
-        
+    def getProfiles():
+        listProfiles = []
+        listValues = []
+        profiles = db.child("Profiles").get()
+        for x in profiles.val():
+            values = db.child("Profiles").child(x).get()
+            for y in values.val():
+                listValues.append(values.val()[y])
+            del listValues[17]
+            listProfiles.append(listValues)
+            listValues = []
+        return listProfiles
+
+    def createUser(values, userID):
+        db.child("Users").child(userID).set(values)
+
+    def getUserDetails(userID):
+        user = db.child("Users").child(userID).get()
+        return user.val()
+
+    def putImg(userID, val):
+        #storage = firebase.storage()
+        #storage.child("Users").child(userID).child("images").put(img)
+        db.child("Images").child(userID).set(val)
