@@ -48,6 +48,7 @@ class DatabaseHelper():
             for y in values.val():
                 listValues.append(values.val()[y])
             del listValues[17]
+            del listValues[20]
             listProfiles.append(listValues)
             listValues = []
         return listProfiles
@@ -63,3 +64,31 @@ class DatabaseHelper():
         #storage = firebase.storage()
         #storage.child("Users").child(userID).child("images").put(img)
         db.child("Images").child(userID).set(val)
+
+    def initialize():
+        files = ["actors", "countries", "directors", "elements", "foods", "groups", "movies", "places", "sexes", "years"]
+        tables = ["Actors", "Countries", "Directors", "Elements", "Foods", "Groups", "Movies", "Places", "Sexes", "Year"]
+        for (x, y) in zip(files, tables):
+            file = open("movie_app/" + x + ".json", encoding='utf-8')
+            data = json.load(file)
+            db.child("BaseProfile").child(y).set(data)
+            file.close() 
+
+    def removeBase():
+        path = db.child("BaseProfile").get()
+        if path.val() == None:
+            pass
+        else:
+           db.child("BaseProfile").remove() 
+
+    def getBase():
+        baseList = []
+        baseValues = []
+        base = db.child("BaseProfile").get()
+        for x in base.val():
+            values = db.child("BaseProfile").child(x).get()
+            for y in values.val():
+                baseValues.append(values.val()[y])
+            baseList.append(baseValues)
+            baseValues = []
+        return baseList

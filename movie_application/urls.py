@@ -13,6 +13,7 @@ urlpatterns = [
     path('profile/load/', views.loadProfile.as_view()),
     path('user/', views.userView.as_view()),
     path('user/details/', views.userDetails.as_view()),
+    path('profile/base/', views.initializeBase),
     path('user/storage/', views.userStorage.as_view()),
     path('profile/cos/', views.cos),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

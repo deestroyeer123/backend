@@ -10,7 +10,6 @@ from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerial
 from .my_database import DatabaseHelper
 from .knn import Knn
 
-
 class userStorage(APIView):
     def get(self):
         pass
@@ -93,14 +92,22 @@ class profileView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+def initializeBase(request):
+    DatabaseHelper.removeBase()
+    DatabaseHelper.initialize()
+    return render(request, 'movie_app/cos.html')
+    
 
 def cos(request):
     userID = "b2L4GxxryBfD35Le5wKG72LgCEz2"
     #DatabaseHelper.getProfile()
     #profile_json = json.dumps(profile)
     #print(profile)
+    
+    #DatabaseHelper.removeBase()
+    #DatabaseHelper.initialize()
     Knn.cos()
+    #DatabaseHelper.getBase("Actors")
     #DatabaseHelper.getUserDetails(userID)
     return render(request, 'movie_app/cos.html')  
 
