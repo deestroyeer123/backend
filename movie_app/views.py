@@ -5,23 +5,29 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from django.http import Http404
-from .models import Profile, ProfileDetails, User, Groups
-from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerializer, GroupsSerializer
+from .models import Profile, ProfileDetails, User, Groups, UserStorage, ImageProfile
+from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerializer, GroupsSerializer, UserStorageSerializer, ImageProfileSerializer
 from .my_database import DatabaseHelper
 from .knn import Knn
 
 class userStorage(APIView):
-    def get(self):
-        pass
+    def get(self, request):
+        img = None
+        userID = DatabaseHelper.uID
+        if DatabaseHelper.imageExist(userID):
+            img = DatabaseHelper.getImg(userID)
+            return Response(img)
+        return Response(img)
     
     def post(self, request):
-        serializer = ProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            userID = DatabaseHelper.uID
-            serializer.save()
-            DatabaseHelper.putImg(userID, serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        img = request.data
+        userID = DatabaseHelper.uID
+        if DatabaseHelper.imageExist(userID):
+            DatabaseHelper.updateImg(userID, img)
+            return Response(img, status=status.HTTP_201_CREATED)
+        DatabaseHelper.putImg(userID, img)
+        return Response(img, status=status.HTTP_201_CREATED)
+        #return Response(img, status=status.HTTP_400_BAD_REQUEST)
 
 class userDetails(APIView):
     def get(self, request):
@@ -95,11 +101,19 @@ class profileView(APIView):
 class getMatchedUsers(APIView):
     def get(self, request):
         listProfiles = []
+        
         users = Knn.setGroup()
         for x in users:
             profile = DatabaseHelper.getProfile(x)
-            listProfiles.append(profile)
+            image = None
+            if DatabaseHelper.imageExist(x):
+                image = DatabaseHelper.getImg(x)
+            profileImage = ImageProfile(prof=profile, img=image)
+            serializer = ImageProfileSerializer(profileImage)
+            listProfiles.append(serializer.data)
+        print(listProfiles)
         return Response(listProfiles)
+
     def post(self):
         pass
 
@@ -110,7 +124,7 @@ def initializeBase(request):
     
 
 def learnModel(request):
-    #Knn.learn()
+    Knn.learn()
     return render(request, 'movie_app/cos.html')
 
     
