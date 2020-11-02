@@ -44,7 +44,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.name
-
-class ImageProfile(models.Model):
-    prof = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    img = models.CharField(max_length=100000000)

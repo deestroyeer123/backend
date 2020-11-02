@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile, ProfileDetails, User, UserStorage, Groups, ImageProfile
+from .models import Profile, ProfileDetails, User, UserStorage, Groups
 
 class ProfileSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -24,9 +24,4 @@ class UserStorageSerializer(serializers.ModelSerializer):
 class GroupsSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Groups
-		fields = '__all__'
-
-class ImageProfileSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = ImageProfile
 		fields = '__all__'

@@ -5,8 +5,8 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from django.http import Http404
-from .models import Profile, ProfileDetails, User, Groups, UserStorage, ImageProfile
-from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerializer, GroupsSerializer, UserStorageSerializer, ImageProfileSerializer
+from .models import Profile, ProfileDetails, User, Groups, UserStorage
+from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerializer, GroupsSerializer, UserStorageSerializer
 from .my_database import DatabaseHelper
 from .knn import Knn
 
@@ -101,17 +101,16 @@ class profileView(APIView):
 class getMatchedUsers(APIView):
     def get(self, request):
         listProfiles = []
-        
+        imageProfiles = {}
         users = Knn.setGroup()
         for x in users:
             profile = DatabaseHelper.getProfile(x)
+            imageProfiles = profile
             image = None
             if DatabaseHelper.imageExist(x):
                 image = DatabaseHelper.getImg(x)
-            profileImage = ImageProfile(prof=profile, img=image)
-            serializer = ImageProfileSerializer(profileImage)
-            listProfiles.append(serializer.data)
-        print(listProfiles)
+            imageProfiles['img'] = image
+            listProfiles.append(imageProfiles)
         return Response(listProfiles)
 
     def post(self):
@@ -124,7 +123,7 @@ def initializeBase(request):
     
 
 def learnModel(request):
-    Knn.learn()
+    #Knn.learn()
     return render(request, 'movie_app/cos.html')
 
     
